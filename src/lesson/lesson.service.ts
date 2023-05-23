@@ -18,9 +18,10 @@ export class LessonService {
       name,
       startDate,
       endDate,
+      students: [],
     });
 
-    console.log(`added new lesson by ${name}, ${startDate}, ${endDate}`);
+    console.log(`added new lesson by name:${name},`);
     return await this.lessonRepository.save(lesson);
   }
 
@@ -30,5 +31,16 @@ export class LessonService {
 
   async getLesson(id: string): Promise<Lesson> {
     return await this.lessonRepository.findOne({ where: { id: id } });
+  }
+
+  async assignStudentsToLesson(
+    lessonId: string,
+    studentIds: string[],
+  ): Promise<Lesson> {
+    const lesson = await this.lessonRepository.findOne({
+      where: { id: lessonId },
+    });
+    lesson.students = [...lesson.students, ...studentIds];
+    return await this.lessonRepository.save(lesson);
   }
 }
